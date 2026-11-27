@@ -120,14 +120,14 @@ const TYPES={cash:{n:'Dompet / Cash',i:'💵',c:'#3f9d4a'},ewallet:{n:'E-Wallet'
 // [id, nama, ikon, warna, grup, [[id, nama, ikon, bobotAwal, tetap]]]
 const DEF=[
 ['rumah','Perumahan','🏠','#d9822b','needs',[['sewa','Sewa / KPR','🏡',22,1],['ipl','Iuran & kebersihan','🧹',2,1],['perbaikan','Perbaikan rumah','🔧',2]]],
-['makan','Makanan','🍽️','#e0533d','needs',[['dapur','Belanja dapur','🛒',20],['harian','Makan harian','🍛',12],['galon','Air minum / galon','🚰',2]]],
+['makan','Makanan','🍽️','#e0533d','needs',[['dapur','Belanja dapur','🛒',20],['bulanan','Belanja bulanan','🛍️',15],['harian','Makan harian','🍛',12],['galon','Air minum / galon','🚰',2]]],
 ['utilitas','Utilitas','💡','#d4a017','needs',[['listrik','Listrik / token','⚡',7,1],['pdam','Air PDAM','💧',3,1],['internet','Internet / WiFi','📶',5,1],['pulsa','Pulsa & kuota','📲',3],['gas','Gas LPG','🔥',2]]],
 ['transport','Transportasi','🛵','#2b87c9','needs',[['bensin','Bensin','⛽',8],['umum','Ojek & transum','🚌',3],['servis','Servis kendaraan','🛠️',2]]],
 ['sehat','Kesehatan','🩺','#d6456f','needs',[['obat','Obat & vitamin','💊',2],['dokter','Dokter / klinik','🏥',2]]],
 ['asuransi','Asuransi','🛡️','#1f6f8b','needs',[['bpjs','BPJS Kesehatan','🪪',3,1],['asuransilain','Asuransi lain','☂️',2,1]]],
 ['lainwajib','Wajib lainnya','📌','#6b7f86','needs',[['sekolah','Pendidikan','🎒',0,1],['cicilan','Cicilan / utang','💳',0,1],['admin','Biaya admin','🧾',1]]],
 ['rawat','Perawatan diri','💆','#e0702f','wants',[['salon','Salon & pangkas','💇',20],['skincare','Skincare & kosmetik','🧴',20]]],
-['hibur','Hiburan','🎬','#0e8f9e','wants',[['jajan','Jajan & nongkrong','☕',25],['nonton','Nonton & rekreasi','🎡',15]]],
+['hibur','Hiburan','🎬','#0e8f9e','wants',[['jajan','Jajan & nongkrong','☕',25],['nonton','Nonton & rekreasi','🎡',15],['hadiah','Hadiah','🎁',10]]],
 ['hobi','Hobi','🎨','#2fa894','wants',[['hobiku','Hobi','🎮',10],['belanja','Belanja pribadi','🛍️',15]]],
 ['langgan','Langganan','🔁','#2563a8','wants',[['streaming','Streaming video/musik','📺',10,1],['aplikasi','Aplikasi & cloud','☁️',5,1]]],
 ['simpan','Tabungan & investasi','🐷','#5c9e3a','save',[['darurat','Dana darurat','🚨',50],['tabungan','Tabungan tujuan','🎯',20],['pensiun','Dana pensiun','👴',15],['investasi','Investasi','📈',15]]]
@@ -161,6 +161,9 @@ const kindOf=k=>KINDS.find(x=>x[0]===k)||KINDS.at(-1);
 // menyesuaikan data versi lama: satu dompet cash, meteran token menjadi tagihan
 const WARNA_LAMA={['#7a52'+'c7']:'#0e8f9e',['#5a6a'+'cf']:'#2563a8',['#4a67'+'c9']:'#1f6f8b',['#c056'+'9f']:'#e0702f'};
 function normalize(d){d.cats.forEach(c=>{if(WARNA_LAMA[c.c])c.c=WARNA_LAMA[c.c]});d.debts=Array.isArray(d.debts)?d.debts:[];
+const hasSub=id=>d.cats.some(c=>c.subs.some(s=>s.id===id));
+if(!hasSub('bulanan')){const c=d.cats.find(x=>x.id==='makan')||d.cats.find(x=>x.g==='needs');if(c)c.subs.push({id:'bulanan',n:'Belanja bulanan',i:'🛍️',w:15,f:false})}
+if(!hasSub('hadiah')){const c=d.cats.find(x=>x.id==='hibur')||d.cats.find(x=>x.g==='wants');if(c)c.subs.push({id:'hadiah',n:'Hadiah',i:'🎁',w:10,f:false})}
 const cash=d.accounts.filter(a=>a.type==='cash');
 if(!cash.length)d.accounts.unshift({id:'cash'+(d.accounts.some(a=>a.id==='cash')?uid():''),name:'Dompet',type:'cash',open:0,icon:'👛'});
 else if(cash.length>1){const main=cash[0],gone=new Set(cash.slice(1).map(a=>a.id));cash.slice(1).forEach(a=>main.open+=a.open);
